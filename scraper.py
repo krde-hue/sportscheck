@@ -5,7 +5,6 @@ from datetime import datetime
 import pytz
 from playwright.sync_api import sync_playwright
 
-# Target Websites
 SITES = {
     "KT": "https://www.7abet.com/en-UN/sportsbook",
     "Sultan": "https://sultanbet.com/betting",
@@ -40,15 +39,18 @@ def scrape_counts():
         
         for name, url in SITES.items():
             print(f"Scraping {name} at {url}...")
+            site_data = {}
             try:
                 page = context.new_page()
                 page.goto(url, timeout=60000)
-                page.wait_for_load_state("networkidle", timeout=15000)
+                
+                # FORCE wait 10 seconds for dynamic numbers to fully load
+                page.wait_for_timeout(10000) 
                 
                 page_text = page.inner_text("body")
-                site_data = {}
                 
                 for sport in SPORTS_TO_TRACK:
+                    # Look for the sport name and the number next to it
                     pattern = rf"{sport}\s*\n*\s*\(?(\d+)\)?"
                     match = re.search(pattern, page_text, re.IGNORECASE)
                     
@@ -59,11 +61,22 @@ def scrape_counts():
                     elif sport_key not in site_data:
                         site_data[sport_key] = ""
                         
-                results[name] = site_data
-                page.close()
             except Exception as e:
                 print(f"Failed to scrape {name}: {e}")
-                results[name] = {"Football": "", "Basketball": "", "Tennis": "", "Ice Hockey": "", "Table Tennis": ""}
+                
+            # Ensure all keys exist even if blank
+            results[name] = {
+                "Football": site_data.get("Football", ""),
+                "Basketball": site_data.get("Basketball", ""),
+                "Tennis": site_data.get("Tennis", ""),
+                "Ice Hockey": site_data.get("Ice Hockey", ""),
+                "Table Tennis": site_data.get("Table Tennis", "")
+            }
+            
+            try:
+                page.close()
+            except:
+                pass
                 
         browser.close()
     return results
