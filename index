@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportscheck Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+        }
+        .dashboard-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+            max-width: 100%;
+        }
+        .header {
+            padding: 20px 20px 0 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+        .status-text {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        .tabs {
+            display: flex;
+            gap: 20px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover {
+            color: #0f172a;
+        }
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab-content {
+            display: none;
+            padding: 0;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1800px;
+        }
+        th, td {
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 8px 4px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+        th {
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        td.sticky-col, th.sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+            background: #ffffff;
+            font-weight: 600;
+            border-right: 2px solid #cbd5e1;
+        }
+        td.sticky-col-2, th.sticky-col-2 {
+            position: sticky;
+            left: 100px;
+            z-index: 11;
+            background: #f8fafc;
+            border-right: 2px solid #cbd5e1;
+        }
+        th.sticky-top-left {
+            z-index: 12 !important;
+        }
+        .bg-football { background-color: #dcfce7; color: #166534; }
+        .bg-basketball { background-color: #f3e8ff; color: #6b21a8; }
+        .bg-tennis { background-color: #ffedd5; color: #9a3412; }
+        .bg-icehockey { background-color: #e0f2fe; color: #075985; }
+        .bg-tabletennis { background-color: #ccfbf1; color: #115e59; }
+        .sub-header {
+            background-color: #f8fafc;
+            font-size: 13px;
+            color: #475569;
+        }
+        input[type="number"] {
+            width: 100%;
+            border: 2px solid transparent;
+            background: transparent;
+            text-align: center;
+            font-family: inherit;
+            font-size: 14px;
+            padding: 6px;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.2s;
+            color: #334155;
+            font-weight: 500;
+        }
+        input[type="number"]:hover {
+            background: #f1f5f9;
+        }
+        input[type="number"]:focus {
+            background: #ffffff;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        tbody tr:nth-child(even) td:not(.sticky-col):not(.sticky-col-2) {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="header">
+        <h1>Sportscheck Tracker</h1>
+        <p class="status-text">Status: <span id="last-updated">Loading data...</span></p>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('prematch')">PREMATCH</button>
+        </div>
+    </div>
+
+    <div id="prematch" class="tab-content active">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="sticky-col sticky-top-left" style="width: 100px;">Date</th>
+                        <th class="sticky-col-2 sticky-top-left" style="width: 120px;">Manila Time</th>
+                        <th colspan="4" class="bg-football">Football</th>
+                        <th colspan="4" class="bg-basketball">Basketball</th>
+                        <th colspan="4" class="bg-tennis">Tennis</th>
+                        <th colspan="4" class="bg-icehockey">Ice Hockey</th>
+                        <th colspan="4" class="bg-tabletennis">Table Tennis</th>
+                    </tr>
+                    <tr class="sub-header">
+                        <th class="sticky-col sticky-top-left"></th>
+                        <th class="sticky-col-2 sticky-top-left"></th>
+                        <th>KT</th><th>Sultan</th><th>SS-BR</th><th>SS-BC</th>
+                        <th>KT</th><th>Sultan</th><th>SS-BR</th><th>SS-BC</th>
+                        <th>KT</th><th>Sultan</th><th>SS-BR</th><th>SS-BC</th>
+                        <th>KT</th><th>Sultan</th><th>SS-BR</th><th>SS-BC</th>
+                        <th>KT</th><th>Sultan</th><th>SS-BR</th><th>SS-BC</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const providers = ["KT", "Sultan", "SS-BR", "SS-BC"];
+    const sports = ["Football", "Basketball", "Tennis", "Ice Hockey", "Table Tennis"];
+    const timeSlots = ["Early 10AM", "Mid 4PM", "Late 9PM"];
+
+    async function loadData() {
+        try {
+            const response = await fetch('data.json?v=' + new Date().getTime());
+            const data = await response.json();
+            
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            const dates = Object.keys(data).sort((a,b) => {
+                const partsA = a.split('/');
+                const partsB = b.split('/');
+                return new Date(partsB[2], partsB[1]-1, partsB[0]) - new Date(partsA[2], partsA[1]-1, partsA[0]);
+            });
+
+            if (dates.length > 0) {
+                document.getElementById('last-updated').innerText = "Data updated automatically.";
+            } else {
+                document.getElementById('last-updated').innerText = "No data recorded yet. Run the Action workflow.";
+            }
+
+            dates.forEach(date => {
+                timeSlots.forEach((slot, index) => {
+                    const tr = document.createElement('tr');
+                    
+                    if (index === 0) {
+                        const tdDate = document.createElement('td');
+                        tdDate.className = 'sticky-col';
+                        tdDate.rowSpan = 3;
+                        tdDate.innerText = date;
+                        tr.appendChild(tdDate);
+                    }
+
+                    const tdTime = document.createElement('td');
+                    tdTime.className = 'sticky-col-2';
+                    tdTime.innerText = slot;
+                    tr.appendChild(tdTime);
+
+                    sports.forEach(sport => {
+                        providers.forEach(provider => {
+                            const td = document.createElement('td');
+                            const input = document.createElement('input');
+                            input.type = 'number';
+                            
+                            if (data[date] && data[date][slot] && data[date][slot][provider] && data[date][slot][provider][sport] !== undefined) {
+                                input.value = data[date][slot][provider][sport];
+                            }
+                            
+                            td.appendChild(input);
+                            tr.appendChild(td);
+                        });
+                    });
+
+                    tbody.appendChild(tr);
+                });
+            });
+
+        } catch (error) {
+            console.error("Error loading data:", error);
+            document.getElementById('last-updated').innerText = "Ready. Trigger manual run in Actions.";
+        }
+    }
+
+    function openTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    window.onload = loadData;
+</script>
+</body>
+</html>
