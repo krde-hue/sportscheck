@@ -643,6 +643,36 @@
                 "Ice Hockey": "",
                 "Table Tennis": ""
             }
+        },
+        "Mid 4PM": {
+            "KT": {
+                "Football": "",
+                "Basketball": "",
+                "Tennis": "",
+                "Ice Hockey": "",
+                "Table Tennis": ""
+            },
+            "Sultan": {
+                "Football": "",
+                "Basketball": "",
+                "Tennis": "",
+                "Ice Hockey": "",
+                "Table Tennis": ""
+            },
+            "SS-BR": {
+                "Football": "",
+                "Basketball": "",
+                "Tennis": "",
+                "Ice Hockey": "",
+                "Table Tennis": ""
+            },
+            "SS-BC": {
+                "Football": "",
+                "Basketball": "",
+                "Tennis": "",
+                "Ice Hockey": "",
+                "Table Tennis": ""
+            }
         }
     }
 }
